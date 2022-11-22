@@ -25,12 +25,30 @@ import java.util.List;
 import java.util.ArrayList;
 import java.lang.Math;
 
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
+
 /**
  * This class defines a simple embedded SQL utility class that is designed to
  * work with PostgreSQL JDBC drivers.
  *
  */
-public class Retail {
+public class Retail extends JFrame {
+   
+   private static final long serialUID = 1L;
+   private JTextField textField;
+   private JPasswordField passwordField;
+   private JButton btnNewButton;
+   private JLabel label;
+   private JPanel contentPane;
+
 
    // reference to physical database connection.
    private Connection _connection = null;
@@ -232,7 +250,8 @@ public class Retail {
     *
     * @param args the command line arguments this inclues the <mysql|pgsql> <login file>
     */
-   public static void main (String[] args) {
+   public static void main(String[] args) {
+   
       if (args.length != 3) {
          System.err.println (
             "Usage: " +
@@ -377,6 +396,7 @@ public class Retail {
    /*
     * Check log in credentials for an existing user
     * @return User login or null is the user does not exist
+    * Also creating the frame
     **/
    public static String LogIn(Retail esql){
       try{
@@ -387,7 +407,7 @@ public class Retail {
 
          String query = String.format("SELECT * FROM USERS WHERE name = '%s' AND password = '%s'", name, password);
          int userNum = esql.executeQuery(query);
-	 if (userNum > 0)
+	   if (userNum > 0)
 		return name;
          return null;
       }catch(Exception e){
@@ -395,6 +415,8 @@ public class Retail {
          return null;
       }
    }//end
+
+
 
 // Rest of the functions definition go in here
 
