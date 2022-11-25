@@ -20,6 +20,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -35,6 +36,7 @@ public class UserLogin extends JFrame {
     private JButton btnNewButton;
     private JLabel label;
     private JPanel contentPane;
+    JCheckBox showPassword;
 
     Retail esql;
     private Connection _connection = null;
@@ -44,7 +46,9 @@ public class UserLogin extends JFrame {
             public void run() {
                 try {
                     UserLogin frame = new UserLogin();
+                    frame.setTitle("Login Form");
                     frame.setVisible(true);
+                    frame.setBounds(10, 10, 370, 600);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -56,6 +60,7 @@ public class UserLogin extends JFrame {
      * Create the frame.
      */
     public UserLogin() {
+
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(450, 190, 1014, 597);
         setResizable(false);
@@ -64,46 +69,60 @@ public class UserLogin extends JFrame {
         setContentPane(contentPane);
         contentPane.setLayout(null);
 
-        JLabel lblNewLabel = new JLabel("Login");
-        lblNewLabel.setForeground(Color.BLACK);
-        lblNewLabel.setFont(new Font("Times New Roman", Font.PLAIN, 46));
-        lblNewLabel.setBounds(423, 13, 273, 93);
-        contentPane.add(lblNewLabel);
+        // JLabel lblNewLabel = new JLabel("Login");
+        // lblNewLabel.setForeground(Color.BLACK);
+        // lblNewLabel.setFont(new Font("Times New Roman", Font.PLAIN, 46));
+        // lblNewLabel.setBounds(423, 13, 273, 93);
+        // contentPane.add(lblNewLabel);
 
         textField = new JTextField();
-        textField.setFont(new Font("Times New Roman", Font.PLAIN, 32));
-        textField.setBounds(481, 170, 281, 68);
+
+        textField.setBounds(150, 150, 150, 30);
         contentPane.add(textField);
         textField.setColumns(10);
 
         passwordField = new JPasswordField();
-        passwordField.setFont(new Font("Times New Roman", Font.PLAIN, 32));
-        passwordField.setBounds(481, 286, 281, 68);
+
+        passwordField.setBounds(150, 220, 150, 30);
         contentPane.add(passwordField);
 
         JLabel lblUsername = new JLabel("Username");
         lblUsername.setBackground(Color.BLACK);
         lblUsername.setForeground(Color.BLACK);
-        lblUsername.setFont(new Font("Times New Roman", Font.PLAIN, 31));
-        lblUsername.setBounds(250, 166, 193, 52);
+
+        lblUsername.setBounds(50, 150, 100, 30);
         contentPane.add(lblUsername);
 
         JLabel lblPassword = new JLabel("Password");
         lblPassword.setForeground(Color.BLACK);
         lblPassword.setBackground(Color.CYAN);
-        lblPassword.setFont(new Font("Times New Roman", Font.PLAIN, 31));
-        lblPassword.setBounds(250, 286, 193, 52);
+
+        lblPassword.setBounds(50, 220, 100, 30);
         contentPane.add(lblPassword);
 
         btnNewButton = new JButton("Login");
-        btnNewButton.setFont(new Font("Times New Roman", Font.PLAIN, 26));
-        btnNewButton.setBounds(545, 392, 162, 73);
+
+        btnNewButton.setBounds(50, 300, 100, 30);
+
+        showPassword = new JCheckBox("Show Password");
+        showPassword.setBounds(150, 250, 150, 30);
+        contentPane.add(showPassword);
+
         btnNewButton.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
                 String name = textField.getText();
                 String password = passwordField.getText();
 
+                // Checkbox
+                if (e.getSource() == showPassword) {
+                    if (showPassword.isSelected()) {
+                        passwordField.setEchoChar((char) 0);
+                    } else {
+                        passwordField.setEchoChar('*');
+                    }
+
+                }
                 try {
                     String url = "jdbc:postgresql://localhost:" + esql.getdbport() + "/" + esql.getdbname();
                     _connection = DriverManager.getConnection(url, esql.getUser(), esql.getPassword());
@@ -130,6 +149,7 @@ public class UserLogin extends JFrame {
                 } catch (SQLException sqlException) {
                     sqlException.printStackTrace();
                 }
+
             }
         });
 
