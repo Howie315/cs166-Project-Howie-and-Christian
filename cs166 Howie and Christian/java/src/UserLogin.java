@@ -36,10 +36,11 @@ public class UserLogin extends JFrame {
     private JButton btnNewButton;
     private JLabel label;
     private JPanel contentPane;
-    JCheckBox showPassword;
+    private JCheckBox showPassword;
 
-    Retail esql;
+    private Retail esql;
     private Connection _connection = null;
+    private connection con = null;
 
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
@@ -82,7 +83,6 @@ public class UserLogin extends JFrame {
         textField.setColumns(10);
 
         passwordField = new JPasswordField();
-
         passwordField.setBounds(150, 220, 150, 30);
         contentPane.add(passwordField);
 
@@ -124,14 +124,13 @@ public class UserLogin extends JFrame {
 
                 }
                 try {
+                    con = new connection();
                     String url = "jdbc:postgresql://localhost:" + esql.getdbport() + "/" + esql.getdbname();
                     _connection = DriverManager.getConnection(url, esql.getUser(), esql.getPassword());
-
-                    PreparedStatement st = (PreparedStatement) _connection
-                            .prepareStatement("Select * from USERS where name= '%s' and password= '%s' ");
-
                     String query = String.format("SELECT * FROM USERS WHERE name = '%s' AND password = '%s'", name,
                             password);
+
+                    PreparedStatement st = _connection.prepareStatement(query);
 
                     st.setString(1, name);
                     st.setString(2, password);
