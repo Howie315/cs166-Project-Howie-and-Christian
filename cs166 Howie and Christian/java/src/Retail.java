@@ -46,7 +46,8 @@ import javax.swing.border.EmptyBorder;
  */
 public class Retail extends JFrame {
 
-   
+   private String dbname, dbport, user, passwd;
+
    // reference to physical database connection.
    private Connection _connection = null;
 
@@ -448,6 +449,38 @@ public class Retail extends JFrame {
       }
    }// end
 
+   /**
+    * 
+    * @return
+    */
+   public String getdbname() {
+      return dbname;
+   }
+
+   /**
+    * 
+    * @return
+    */
+   public String getdbport() {
+      return dbport;
+   }
+
+   /**
+    * 
+    * @return
+    */
+   public String getUser() {
+      return user;
+   }
+
+   /**
+    * 
+    * @return
+    */
+   public String getPassword() {
+      return passwd;
+   }
+
    // Rest of the functions definition go in here
 
    public static void viewStores(Retail esql) {
@@ -462,7 +495,7 @@ public class Retail extends JFrame {
    }
 
    public static void viewRecentOrders(Retail esql) {
-      
+
    }
 
    public static void updateProduct(Retail esql) {
