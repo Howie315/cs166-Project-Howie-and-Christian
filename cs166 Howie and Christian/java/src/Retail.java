@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.lang.Math;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -47,9 +48,12 @@ import javax.swing.border.EmptyBorder;
 public class Retail extends JFrame {
 
    private String dbname, dbport, user, passwd;
+   private static String userType = "";
+   private int userID = -1;
 
    // reference to physical database connection.
    private Connection _connection = null;
+   private String currUserIDString = Integer.toString(userID);
 
    // handling the keyboard inputs through a BufferedReader
    // This variable can be global for convenience.
@@ -481,9 +485,26 @@ public class Retail extends JFrame {
       return passwd;
    }
 
+   /**
+    * 
+    * @return
+    */
+   public String getUserId() {
+      return currUserIDString;
+   }
+
+   /**
+    * 
+    * @return
+    */
+   public Connection getConnection() {
+      return _connection;
+   }
+
    // Rest of the functions definition go in here
 
    public static void viewStores(Retail esql) {
+
    }
 
    public static void viewProducts(Retail esql) {

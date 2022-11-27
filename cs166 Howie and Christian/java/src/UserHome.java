@@ -12,7 +12,7 @@ import java.io.InputStreamReader;
 import java.util.List;
 import java.util.ArrayList;
 import java.lang.Math;
-
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
@@ -35,12 +35,25 @@ import javax.swing.border.EmptyBorder;
 public class UserHome extends JFrame {
     private static final long serialVersionUID = 1L;
     private JPanel contentPane;
+    private JPanel top;
     private JButton btnNewButton;
-    JMenuBar menuBar;
-    JMenu menu;
-    JMenuItem menuItem;
+    private JButton storesButton;
+    private JMenuBar menuBar;
+    private JMenu fileMenu;
+    private JMenu aboutMenu;
+    private JMenuItem exitItem;
+    JMenu logout;
+    JMenuItem logoutItem;
+
+    private JMenuItem about;
+    private static Retail esql;
+    // Classes
+    private BrowseStores store;
+    private BrowseProducts product;
 
     private UserLogin login;
+    private static String user = "Howie";
+    private Connection _connection = null;
 
     /**
      * Launch the application.
@@ -49,8 +62,8 @@ public class UserHome extends JFrame {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    UserHome frame = new UserHome();
-                    frame.setVisible(true);
+                    new UserHome(user).setVisible(true);
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -58,10 +71,6 @@ public class UserHome extends JFrame {
         });
     }
 
-    /**
-     * Default Constructor
-     * Returns Nothing
-     */
     public UserHome() {
 
     }
@@ -72,8 +81,56 @@ public class UserHome extends JFrame {
      * @param userSes
      */
     public UserHome(String userSes) {
+        setSize(1500, 1500);
+        setTitle("Home");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setBounds(450, 190, 1014, 597);
+        contentPane = new JPanel();
+        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+        setContentPane(contentPane);
+        contentPane.setLayout(null);
+
+        /*
+         * Setting the menu
+         */
+        menuBar = new JMenuBar();
+        fileMenu = new JMenu("File");
+        aboutMenu = new JMenu("About");
+
+        exitItem = new JMenuItem("Exit");
+        about = new JMenuItem("About Contributers");
+
+        about.addActionListener(new AboutMenuListener());
+        exitItem.addActionListener(new ExitListener());
+
+        menuBar.add(fileMenu);
+        fileMenu.add(exitItem);
+
+        menuBar.add(aboutMenu);
+        aboutMenu.add(about);
+
+        setJMenuBar(menuBar);
+
+        // Intiating all of the Jpanels
+        // store = new BrowseStores(esql.getUser());
+        // product = new BrowseProducts();
+
+        /*
+         * Setting View product and View stores
+         */
+
+        // contentPane = new JPanel(new BorderLayout());
+        // top = new JPanel(new BorderLayout());
+        // contentPane.add(store, BorderLayout.WEST);
+        // contentPane.add(product, BorderLayout.EAST);
+        // contentPane.add(top, BorderLayout.NORTH);
+        // add(top);
+        // add(contentPane);
 
         btnNewButton = new JButton("Logout");
+        btnNewButton.setForeground(new Color(0, 0, 0));
+        btnNewButton.setBackground(UIManager.getColor("Button.disabledForeground"));
+
         btnNewButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 int a = JOptionPane.showConfirmDialog(btnNewButton, "Are you sure?");
@@ -83,15 +140,24 @@ public class UserHome extends JFrame {
                     UserLogin obj = new UserLogin();
                     obj.setTitle("User-Login");
                     obj.setVisible(true);
-                }
-                dispose();
-                UserLogin user = new UserLogin();
+                } else if (a == JOptionPane.NO_OPTION) {
 
-                user.setTitle("User-Login");
-                user.setVisible(true);
+                }
+            }
+        });
+        btnNewButton.setBounds(880, 500, 100, 30);
+
+        contentPane.add(btnNewButton, BorderLayout.SOUTH);
+        add(btnNewButton);
+
+        storesButton = new JButton("View Stores Near you");
+        storesButton.setForeground(new Color(0, 0, 0));
+        storesButton.setBackground(UIManager.getColor("Button.disabledForeground"));
+
+        storesButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
 
             }
         });
-
     }
 }

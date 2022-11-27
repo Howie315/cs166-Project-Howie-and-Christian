@@ -154,9 +154,3 @@ public class UserLogin extends JFrame {
         });
 
         contentPane.add(btnNewButton);
-
-        label = new JLabel("");
-        label.setBounds(0, 0, 1008, 562);
-        contentPane.add(label);
-    }
-}
