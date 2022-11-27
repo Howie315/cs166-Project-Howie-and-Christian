@@ -154,3 +154,5 @@ public class UserLogin extends JFrame {
         });
 
         contentPane.add(btnNewButton);
+    }
+}
