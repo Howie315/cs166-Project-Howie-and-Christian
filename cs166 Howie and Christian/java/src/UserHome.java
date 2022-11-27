@@ -62,7 +62,8 @@ public class UserHome extends JFrame {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    new UserHome(user).setVisible(true);
+                    //new UserHome(user).setVisible(true);
+                    UserHome frame = new UserHome();
 
                 } catch (Exception e) {
                     e.printStackTrace();
