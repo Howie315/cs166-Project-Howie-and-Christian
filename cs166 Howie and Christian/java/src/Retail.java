@@ -51,6 +51,11 @@ public class Retail extends JFrame {
    private static String userType = "";
    private int userID = -1;
 
+   public static String userType = "";
+   public static int userID = -1;
+   public static double currUserLat = -1.0;
+   public static double currUserLong = -1.0;	  
+
    // reference to physical database connection.
    private Connection _connection = null;
    private String currUserIDString = Integer.toString(userID);
@@ -70,7 +75,6 @@ public class Retail extends JFrame {
     * @throws java.sql.SQLException when failed to make a connection.
     */
    public Retail(String dbname, String dbport, String user, String passwd) throws SQLException {
-
       System.out.print("Connecting to database...");
       try {
          // constructs the connection URL
@@ -444,8 +448,29 @@ public class Retail extends JFrame {
 
          String query = String.format("SELECT * FROM USERS WHERE name = '%s' AND password = '%s'", name, password);
          int userNum = esql.executeQuery(query);
+
+	 String query2 = String.format("Select * from users where name='%s' AND password = '%s'", name, password);
+	 List<List<String>> result = esql.executeQueryAndReturnResult(query2);
+	 //no longer needSystem.out.print("Current UserID:");
+	 //no longer need System.out.println(result.get(0).get(0));
+	 userID = Integer.parseInt(result.get(0).get(0));
+	 //System.out.print("UserID Var:");
+	 //System.out.println(userID);
+	 currUserLat = Double.parseDouble(result.get(0).get(3));
+	 //System.out.println(currUserLat);
+	 currUserLong = Double.parseDouble(result.get(0).get(4));
+	 //System.out.println(currUserLong);
+	 //System.out.println(result.get(0).get(5));
+	 userType = result.get(0).get(5);
+	 //System.out.println(userType.getClass());
+	 //System.out.print("userType:");
+	 //System.out.println(userType);
+	 if (userNum > 0)
+		return name;
+
          if (userNum > 0)
             return name;
+
          return null;
       } catch (Exception e) {
          System.err.println(e.getMessage());
@@ -511,7 +536,45 @@ public class Retail extends JFrame {
 
    }
 
+
+   public static void viewStores(Retail esql) {
+	String currUserIDString = Integer.toString(userID);
+	String query = String.format("select s.storeID, s.name, calculate_distance(u.latitude, u.longitude, s.latitude, s.longitude) as dist from users u, store s where u.userID = '%s' and calculate_distance(u.latitude, u.longitude, s.latitude, s.longitude) < 30", currUserIDString); 
+	try {
+	int userNum = esql.executeQueryAndPrintResult(query);
+	}
+	catch (Exception e) {
+	System.err.println (e.getMessage());
+	}
+}
+   public static void viewProducts(Retail esql) {
+	String storeID = "";
+	try {
+	System.out.println("Enter Store ID:");
+	storeID = in.readLine();
+	}
+	catch (Exception e) {
+	System.err.println (e.getMessage());
+	}
+	String query = String.format("select * from Product p where storeID='%s'", storeID);
+        try {
+        int userNum = esql.executeQueryAndPrintResult(query);
+        }
+        catch (Exception e) {
+        System.err.println (e.getMessage());
+        }
+
+}
+   public static void placeOrder(Retail esql) {}
+   public static void viewRecentOrders(Retail esql) {}
+   public static void updateProduct(Retail esql) {}
+   public static void viewRecentUpdates(Retail esql) {}
+   public static void viewPopularProducts(Retail esql) {}
+   public static void viewPopularCustomers(Retail esql) {}
+   public static void placeProductSupplyRequests(Retail esql) {}
+
    public static void placeOrder(Retail esql) {
+
 
    }
 
@@ -534,4 +597,6 @@ public class Retail extends JFrame {
    public static void placeProductSupplyRequests(Retail esql) {
    }
 
+
 }// end Retail
+
