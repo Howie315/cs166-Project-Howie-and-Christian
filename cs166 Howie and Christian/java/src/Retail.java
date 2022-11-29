@@ -548,7 +548,9 @@ public class Retail {
         }
 
 }
-   public static void updateProduct(Retail esql) {}
+   public static void updateProduct(Retail esql) {
+      
+   }
    public static void viewRecentUpdates(Retail esql) {}
    public static void viewPopularProducts(Retail esql) {}
    public static void viewPopularCustomers(Retail esql) {}
