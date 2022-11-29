@@ -418,6 +418,59 @@ public class Retail {
 
 // Rest of the functions definition go in here
 
+   }// end
+
+   /**
+    * 
+    * @return
+    */
+   public String getdbname() {
+      return dbname;
+   }
+
+   /**
+    * 
+    * @return
+    */
+   public String getdbport() {
+      return dbport;
+   }
+
+   /**
+    * 
+    * @return
+    */
+   public String getUser() {
+      return user;
+   }
+
+   /**
+    * 
+    * @return
+    */
+   public String getPassword() {
+      return passwd;
+   }
+
+   /**
+    * 
+    * @return
+    */
+   public String getUserId() {
+      return currUserIDString;
+   }
+
+   /**
+    * 
+    * @return
+    */
+   public Connection getConnection() {
+      return _connection;
+   }
+
+   // Rest of the functions definition go in here
+
+
    public static void viewStores(Retail esql) {
 	String currUserIDString = Integer.toString(userID);
 	String query = String.format("select s.storeID, s.name, calculate_distance(u.latitude, u.longitude, s.latitude, s.longitude) as dist from users u, store s where u.userID = '%s' and calculate_distance(u.latitude, u.longitude, s.latitude, s.longitude) < 30", currUserIDString); 
