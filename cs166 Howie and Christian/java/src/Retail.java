@@ -418,7 +418,7 @@ public class Retail {
 
 // Rest of the functions definition go in here
 
-   }// end
+   // end
 
    /**
     * 
