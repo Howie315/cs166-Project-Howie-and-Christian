@@ -528,15 +528,7 @@ public class Retail extends JFrame {
 
    // Rest of the functions definition go in here
 
-   public static void viewStores(Retail esql) {
-
-   }
-
-   public static void viewProducts(Retail esql) {
-
-   }
-
-
+   
    public static void viewStores(Retail esql) {
 	String currUserIDString = Integer.toString(userID);
 	String query = String.format("select s.storeID, s.name, calculate_distance(u.latitude, u.longitude, s.latitude, s.longitude) as dist from users u, store s where u.userID = '%s' and calculate_distance(u.latitude, u.longitude, s.latitude, s.longitude) < 30", currUserIDString); 
