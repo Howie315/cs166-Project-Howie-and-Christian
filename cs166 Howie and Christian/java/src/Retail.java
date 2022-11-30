@@ -36,6 +36,8 @@ public class Retail {
    public static int userID = -1;
    public static double currUserLat = -1.0;
    public static double currUserLong = -1.0;	  
+   private String dbname, dbport, user, passwd;
+   private String currUserIDString = Integer.toString(userID);
 
    // reference to physical database connection.
    private Connection _connection = null;
@@ -554,7 +556,7 @@ public class Retail {
          String name = in.readLine();
 
          //String currUserIDString = Integer.toString(userID);
-         String query = String.format("update product, " , name)
+         String query = String.format("update product, " , name);
 
       }catch(Exception e){
            System.err.println (e.getMessage());
@@ -563,7 +565,7 @@ public class Retail {
    public static void viewRecentUpdates(Retail esql) {
       try{
          String currUserIDString = Integer.toString(userID);
-         String query = String.format("select * from ProductUpdates p, order by p.updateOn desc limit 5", userID);
+         String query = String.format("select * from ProductUpdates p order by p.updatedOn desc limit 5", userID);
          int userNum = esql.executeQueryAndPrintResult(query);
       }catch(Exception e){
            System.err.println (e.getMessage());
@@ -573,7 +575,7 @@ public class Retail {
    public static void viewPopularProducts(Retail esql) {
       try{
          String currUserIDString = Integer.toString(userID);
-         String query = String.format("select o.productName, o.storeID from Store s, Orders o where o.storeID = s.storeID and s.managerID = '%s', group by o.productName and o.storeID, order by sum(o.unitsOrdered) desc limit 5", currUserIDString );
+         String query = String.format("select o.productName, o.storeID from Store s, Orders o where o.storeID = s.storeID and s.managerID = '%s' group by o.productName, o.storeID order by sum(o.unitsOrdered) desc limit 5", currUserIDString );
          int userNum = esql.executeQueryAndPrintResult(query);
 
       }catch(Exception e){
