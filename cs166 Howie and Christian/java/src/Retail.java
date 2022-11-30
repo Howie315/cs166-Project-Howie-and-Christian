@@ -574,8 +574,10 @@ public class Retail {
    }
    public static void viewPopularProducts(Retail esql) {
       try{
+         System.out.print("\tEnter storeID: ");
+         String store = in.readLine();
          String currUserIDString = Integer.toString(userID);
-         String query = String.format("select o.productName, o.storeID from Store s, Orders o where o.storeID = s.storeID and s.managerID = '%s' group by o.productName, o.storeID order by sum(o.unitsOrdered) desc limit 5", currUserIDString );
+         String query = String.format("select o.productName from Orders o where o.storeID = '%s' group by o.productName order by sum(o.unitsOrdered) desc limit 5", store);
          int userNum = esql.executeQueryAndPrintResult(query);
 
       }catch(Exception e){
