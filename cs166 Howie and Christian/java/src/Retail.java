@@ -549,11 +549,45 @@ public class Retail {
 
 }
    public static void updateProduct(Retail esql) {
+      try{
+         System.out.print("\tEnter name: ");
+         String name = in.readLine();
+
+         //String currUserIDString = Integer.toString(userID);
+         String query = String.format("update product, " , name)
+
+      }catch(Exception e){
+           System.err.println (e.getMessage());
+      }
+   }
+   public static void viewRecentUpdates(Retail esql) {
+      try{
+         String currUserIDString = Integer.toString(userID);
+         String query = String.format("select * from ProductUpdates p, order by p.updateOn desc limit 5", userID);
+         int userNum = esql.executeQueryAndPrintResult(query);
+      }catch(Exception e){
+           System.err.println (e.getMessage());
+      }
       
    }
-   public static void viewRecentUpdates(Retail esql) {}
-   public static void viewPopularProducts(Retail esql) {}
-   public static void viewPopularCustomers(Retail esql) {}
+   public static void viewPopularProducts(Retail esql) {
+      try{
+         String currUserIDString = Integer.toString(userID);
+         String query = String.format("select o.productName, o.storeID from Store s, Orders o where o.storeID = s.storeID and s.managerID = '%s', group by o.productName and o.storeID, order by sum(o.unitsOrdered) desc limit 5", currUserIDString );
+         int userNum = esql.executeQueryAndPrintResult(query);
+
+      }catch(Exception e){
+           System.err.println (e.getMessage());
+      }
+
+   }
+   public static void viewPopularCustomers(Retail esql) {
+      try{
+         
+      }catch(Exception e){
+           System.err.println (e.getMessage());
+      }
+   }
    public static void placeProductSupplyRequests(Retail esql) {}
 
 }//end Retail

@@ -3,7 +3,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 export JAVA_HOME=/extra/hnguy431/cs166/jdk1.8.0_352.jdk
 export PATH=$JAVA_HOME/bin:$PATH
--Djava.awt.headless=true
+
 
 
 # compile the java program
