@@ -1,6 +1,7 @@
 drop sequence if exists nextOrderNum;
 create sequence nextOrderNum start with 501;
 
+create or replace language plpsql;
 create or replace function updateNextOrderNum()
 returns trigger as
 $ord$
