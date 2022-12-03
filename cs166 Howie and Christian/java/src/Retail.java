@@ -281,6 +281,7 @@ public class Retail {
             if (authorizedUser != null) {
               boolean usermenu = true;
               while(usermenu) {
+
 		 if (authorizedUser.contains("admin")) {
                  System.out.println("MAIN MENU");
                  System.out.println("---------");
@@ -346,6 +347,38 @@ public class Retail {
                     case 20: usermenu = false; break;
                     default : System.out.println("Unrecognized choice!"); break;
                  }
+
+               //  System.out.println("MAIN MENU");
+               //  System.out.println("---------");
+               //  System.out.println("1. View Stores within 30 miles");
+               //  System.out.println("2. View Product List");
+               //  System.out.println("3. Place a Order");
+               //  System.out.println("4. View 5 recent orders");
+
+               //  //the following functionalities basically used by managers
+               //  System.out.println("5. Update Product");
+               //  System.out.println("6. View 5 recent Product Updates Info");
+               //  System.out.println("7. View 5 Popular Items");
+               //  System.out.println("8. View 5 Popular Customers");
+               //  System.out.println("9. Place Product Supply Request to Warehouse");
+
+               //  System.out.println(".........................");
+               //  System.out.println("20. Log out");
+               //  switch (readChoice()){
+               //     case 1: viewStores(esql); break;
+               //     case 2: viewProducts(esql); break;
+               //     case 3: placeOrder(esql); break;
+               //     case 4: viewRecentOrders(esql); break;
+               //     case 5: updateProduct(esql); break;
+               //     case 6: viewRecentUpdates(esql); break;
+               //     case 7: viewPopularProducts(esql); break;
+               //     case 8: viewPopularCustomers(esql); break;
+               //     case 9: placeProductSupplyRequests(esql); break;
+
+               //     case 20: usermenu = false; break;
+               //     default : System.out.println("Unrecognized choice!"); break;
+               //  }
+
               }
             }
          }//end while
