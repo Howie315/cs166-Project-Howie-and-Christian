@@ -36,6 +36,8 @@ public class Retail {
    public static int userID = -1;
    public static double currUserLat = -1.0;
    public static double currUserLong = -1.0;	  
+   private String dbname, dbport, user, passwd;
+   private String currUserIDString = Integer.toString(userID);
 
    // reference to physical database connection.
    private Connection _connection = null;
@@ -237,6 +239,9 @@ public class Retail {
     * @param args the command line arguments this inclues the <mysql|pgsql> <login file>
     */
    public static void main (String[] args) {
+      String admin = "admin";
+      String customer = "customer";
+      String manager = "manager";
       if (args.length != 3) {
          System.err.println (
             "Usage: " +
@@ -260,52 +265,87 @@ public class Retail {
 
          boolean keepon = true;
          while(keepon) {
-            // These are sample SQL statements
+            // Thiese are sample SQL statements
             System.out.println("MAIN MENU");
             System.out.println("---------");
             System.out.println("1. Create user");
             System.out.println("2. Log in");
             System.out.println("9. < EXIT");
-            String authorisedUser = null;
+            String authorizedUser = null;
             switch (readChoice()){
                case 1: CreateUser(esql); break;
-               case 2: authorisedUser = LogIn(esql); break;
+               case 2: authorizedUser = LogIn(esql); break;
                case 9: keepon = false; break;
                default : System.out.println("Unrecognized choice!"); break;
             }//end switch
-            if (authorisedUser != null) {
+            if (authorizedUser != null) {
               boolean usermenu = true;
               while(usermenu) {
-                System.out.println("MAIN MENU");
-                System.out.println("---------");
-                System.out.println("1. View Stores within 30 miles");
-                System.out.println("2. View Product List");
-                System.out.println("3. Place a Order");
-                System.out.println("4. View 5 recent orders");
+		 if (authorizedUser.contains("admin")) {
+                 System.out.println("MAIN MENU");
+                 System.out.println("---------");
+                 System.out.println("1. View Stores within 30 miles");
+                 System.out.println("2. View Product List");
+                 System.out.println("3. Place a Order");
+                 System.out.println("4. View 5 recent orders");
 
-                //the following functionalities basically used by managers
-                System.out.println("5. Update Product");
-                System.out.println("6. View 5 recent Product Updates Info");
-                System.out.println("7. View 5 Popular Items");
-                System.out.println("8. View 5 Popular Customers");
-                System.out.println("9. Place Product Supply Request to Warehouse");
+               //the following functionalities basically used by managers
+                 System.out.println("5. Update Product");
+                 System.out.println("6. View 5 recent Product Updates Info");
+                 System.out.println("7. View 5 Popular Items");
+                 System.out.println("8. View 5 Popular Customers");
+                 System.out.println("9. Place Product Supply Request to Warehouse");
+		
 
-                System.out.println(".........................");
-                System.out.println("20. Log out");
-                switch (readChoice()){
-                   case 1: viewStores(esql); break;
-                   case 2: viewProducts(esql); break;
-                   case 3: placeOrder(esql); break;
-                   case 4: viewRecentOrders(esql); break;
-                   case 5: updateProduct(esql); break;
-                   case 6: viewRecentUpdates(esql); break;
-                   case 7: viewPopularProducts(esql); break;
-                   case 8: viewPopularCustomers(esql); break;
-                   case 9: placeProductSupplyRequests(esql); break;
+                 System.out.println(".........................");
+                 System.out.println("20. Log out");
 
-                   case 20: usermenu = false; break;
-                   default : System.out.println("Unrecognized choice!"); break;
-                }
+		}
+		else if (authorizedUser.contains("manager")) {
+                 System.out.println("MAIN MENU");
+                 System.out.println("---------");
+                 System.out.println("1. View Stores within 30 miles");
+                 System.out.println("2. View Product List");
+                 System.out.println("3. Place a Order");
+                 System.out.println("4. View 5 recent orders");
+
+                 System.out.println("5. Update Product");
+                 System.out.println("6. View 5 recent Product Updates Info");
+                 System.out.println("7. View 5 Popular Items");
+                 System.out.println("8. View 5 Popular Customers");
+                 System.out.println("9. Place Product Supply Request to Warehouse");
+
+
+                 System.out.println(".........................");
+                 System.out.println("20. Log out");
+
+
+} 
+		else {
+                 System.out.println("MAIN MENU");
+                 System.out.println("---------");
+                 System.out.println("1. View Stores within 30 miles");
+                 System.out.println("2. View Product List");
+                 System.out.println("3. Place a Order");
+                 System.out.println("4. View 5 recent orders");
+                 System.out.println(".........................");
+                 System.out.println("20. Log out");
+
+}          
+                 switch (readChoice()){
+                    case 1: viewStores(esql); break;
+                    case 2: viewProducts(esql); break;
+                    case 3: placeOrder(esql); break;
+                    case 4: viewRecentOrders(esql); break;
+                    case 5: updateProduct(esql); break;
+                    case 6: viewRecentUpdates(esql); break;
+                    case 7: viewPopularProducts(esql); break;
+                    case 8: viewPopularCustomers(esql); break;
+                    case 9: placeProductSupplyRequests(esql); break;
+
+                    case 20: usermenu = false; break;
+                    default : System.out.println("Unrecognized choice!"); break;
+                 }
               }
             }
          }//end while
@@ -396,8 +436,8 @@ public class Retail {
 	 //no longer needSystem.out.print("Current UserID:");
 	 //no longer need System.out.println(result.get(0).get(0));
 	 userID = Integer.parseInt(result.get(0).get(0));
-	 System.out.print("UserID Var:");
-	 System.out.println(userID);
+	// System.out.print("UserID Var:");
+	// System.out.println(userID);
 	 currUserLat = Double.parseDouble(result.get(0).get(4));
 	 //System.out.println(currUserLat);
 	 currUserLong = Double.parseDouble(result.get(0).get(3));
@@ -408,9 +448,10 @@ public class Retail {
 	 //System.out.print("userType:");
 	 //System.out.println(userType);
 	 if (userNum > 0)
-		return name;
+		return userType;
          return null;
       }catch(Exception e){
+	 System.err.println("User Not Found!");
          System.err.println (e.getMessage ());
          return null;
       }
@@ -418,7 +459,7 @@ public class Retail {
 
 // Rest of the functions definition go in here
 
-   }// end
+   // end
 
    /**
     * 
@@ -482,35 +523,37 @@ public class Retail {
 	}
 }
    public static void viewProducts(Retail esql) {
-	String storeID = "";
 	try {
+	String storeID = "";
 	System.out.println("Enter Store ID:");
 	storeID = in.readLine();
-	}
-	catch (Exception e) {
-	System.err.println (e.getMessage());
-	}
 	String query = String.format("select * from Product p where storeID='%s'", storeID);
-        try {
         int userNum = esql.executeQueryAndPrintResult(query);
-        }
-        catch (Exception e) {
-        System.err.println (e.getMessage());
-        }
-
+	if (userNum == 0) {
+	throw new Exception();
 }
-
+	}
+        catch (Exception e) {
+        System.out.println("Store ID does not exist!");
+        }
+}
    public static void placeOrder(Retail esql) {
 	 try {
 	 double distance;
 	 String storeLat;
 	 String storeLong;
+	 int numProducts;
          System.out.print("\tEnter Store ID:");
          String storeID = in.readLine();
          System.out.print("\tEnter Product Name:");
          String productName = in.readLine();
 	 System.out.print("\tEnter Number of Units:");
          String numUnits = in.readLine();
+
+	 if (Integer.parseInt(numUnits) <= 0) {
+		System.out.println("Incorrect Number of Items.");
+	 }
+
          String query = String.format("select latitude, longitude from Store s where s.storeID='%s'", storeID);
 	 List<List<String>> result = esql.executeQueryAndReturnResult(query);
 	 storeLat = result.get(0).get(0);
@@ -521,18 +564,39 @@ public class Retail {
 	 //System.out.println(Double.parseDouble(storeLong));
          distance = calculateDistance(currUserLong, currUserLat, Double.parseDouble(storeLat), Double.parseDouble(storeLong));
 	 //System.out.println(distance);
+	 //check distance
 	 if (distance > 30.0) {
 	 System.out.println("You are too far away from this store! Sorry for the inconvenience.");
 	 return;
 	 }
+	 //check product count
+	 String query3 = String.format("select numberOfUnits from product where storeID = %s and productName = '%s';", storeID, productName);
+         List<List<String>> result2 = esql.executeQueryAndReturnResult(query3);
+         numProducts = Integer.parseInt(result2.get(0).get(0));
+
+         //check product name
+        String query4 = String.format("select productName from product where productName = '%s';", productName);
+	int numRows = esql.executeQuery(query4);
+            
+
+
+	 if (Integer.parseInt(numUnits) > numProducts) {
+	 System.out.println("This store does not have enough product of that type! Sorry for the inconvenience.");
+	 return;
+}
+
 	 else {
 	 String query2 = String.format("insert into orders (orderNumber, customerID, storeID, productName, unitsOrdered, orderTime) values (nextval('nextOrderNum'),%s,%s,'%s',%s,now())", userID, storeID, productName, numUnits);
 	 esql.executeUpdate(query2);
+	 String query5 = String.format("update product set numberOfUnits = numberOfUnits - %s where storeID = %s and productName = '%s';", numUnits, storeID, productName);
+	 esql.executeUpdate(query5);
+	 System.out.println("Order Successfully made!");
 	 //FINISH INSERTING INTO ORDERS TABLE AND UPDATING PRODUCT TABLE THEN DONE WITH THIS 
 	 }
 	 }
          catch (Exception e) {
-         System.err.println (e.getMessage());
+	 System.out.println("Product Name or StoreID does not exist!");
+        // System.err.println (e.getMessage());
          }
 	 
 }
@@ -548,10 +612,48 @@ public class Retail {
         }
 
 }
-   public static void updateProduct(Retail esql) {}
-   public static void viewRecentUpdates(Retail esql) {}
-   public static void viewPopularProducts(Retail esql) {}
-   public static void viewPopularCustomers(Retail esql) {}
+   public static void updateProduct(Retail esql) {
+      try{
+         System.out.print("\tEnter product: ");
+         String product = in.readLine();
+
+         //String currUserIDString = Integer.toString(userID);
+         String query = String.format("update product, " , product);
+
+      }catch(Exception e){
+           System.err.println (e.getMessage());
+      }
+   }
+   public static void viewRecentUpdates(Retail esql) {
+      try{
+         String currUserIDString = Integer.toString(userID);
+         String query = String.format("select * from ProductUpdates p order by p.updatedOn desc limit 5", userID);
+         int userNum = esql.executeQueryAndPrintResult(query);
+      }catch(Exception e){
+           System.err.println (e.getMessage());
+      }
+      
+   }
+   public static void viewPopularProducts(Retail esql) {
+      try{
+         System.out.print("\tEnter storeID: ");
+         String store = in.readLine();
+         String currUserIDString = Integer.toString(userID);
+         String query = String.format("select o.productName from Orders o where o.storeID = '%s' group by o.productName order by sum(o.unitsOrdered) desc limit 5", store);
+         int userNum = esql.executeQueryAndPrintResult(query);
+
+      }catch(Exception e){
+           System.err.println (e.getMessage());
+      }
+
+   }
+   public static void viewPopularCustomers(Retail esql) {
+      try{
+         
+      }catch(Exception e){
+           System.err.println (e.getMessage());
+      }
+   }
    public static void placeProductSupplyRequests(Retail esql) {}
 
 }//end Retail
