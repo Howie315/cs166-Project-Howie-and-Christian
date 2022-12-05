@@ -25,6 +25,9 @@ import java.util.List;
 import java.util.ArrayList;
 import java.lang.Math;
 
+import java.util.Formatter;
+import java.util.*;
+
 /**
  * This class defines a simple embedded SQL utility class that is designed to
  * work with PostgreSQL JDBC drivers.
@@ -120,21 +123,26 @@ public class Retail {
       ResultSetMetaData rsmd = rs.getMetaData ();
       int numCol = rsmd.getColumnCount ();
       int rowCount = 0;
+   
+     
+      
 
       // iterates through the result set and output them to standard out.
       boolean outputHeader = true;
       while (rs.next()){
 		 if(outputHeader){
 			for(int i = 1; i <= numCol; i++){
-			System.out.print(rsmd.getColumnName(i) + "\t");
+			System.out.printf("| %-17s", rsmd.getColumnLabel(i)); // "\t"
 			}
 			System.out.println();
 			outputHeader = false;
 		 }
-         for (int i=1; i<=numCol; ++i)
-            System.out.print (rs.getString (i) + "\t");
-         System.out.println ();
+         for (int i=1; i<=numCol; ++i){
+            System.out.printf("| %-17s", rs.getString(i));
+         }
+         System.out.println();
          ++rowCount;
+         
       }//end while
       stmt.close ();
       return rowCount;
@@ -239,9 +247,7 @@ public class Retail {
     * @param args the command line arguments this inclues the <mysql|pgsql> <login file>
     */
    public static void main (String[] args) {
-      String admin = "admin";
-      String customer = "customer";
-      String manager = "manager";
+     
       if (args.length != 3) {
          System.err.println (
             "Usage: " +
@@ -281,14 +287,12 @@ public class Retail {
             if (authorizedUser != null) {
               boolean usermenu = true;
               while(usermenu) {
+             
 
-		 if (authorizedUser.contains("admin")) {
+
+		   if(authorizedUser.contains("admin")) {
                  System.out.println("MAIN MENU");
                  System.out.println("---------");
-                 System.out.println("1. View Stores within 30 miles");
-                 System.out.println("2. View Product List");
-                 System.out.println("3. Place a Order");
-                 System.out.println("4. View 5 recent orders");
 
                //the following functionalities basically used by managers
                  System.out.println("5. Update Product");
@@ -296,7 +300,10 @@ public class Retail {
                  System.out.println("7. View 5 Popular Items");
                  System.out.println("8. View 5 Popular Customers");
                  System.out.println("9. Place Product Supply Request to Warehouse");
-		
+                 System.out.println("10. View All Users");
+                 System.out.println("11. View All Managers");
+                 System.out.println("12. Update User Information");
+                 System.out.println("");
 
                  System.out.println(".........................");
                  System.out.println("20. Log out");
@@ -305,11 +312,6 @@ public class Retail {
 		else if (authorizedUser.contains("manager")) {
                  System.out.println("MAIN MENU");
                  System.out.println("---------");
-                 System.out.println("1. View Stores within 30 miles");
-                 System.out.println("2. View Product List");
-                 System.out.println("3. Place a Order");
-                 System.out.println("4. View 5 recent orders");
-
                  System.out.println("5. Update Product");
                  System.out.println("6. View 5 recent Product Updates Info");
                  System.out.println("7. View 5 Popular Items");
@@ -321,9 +323,9 @@ public class Retail {
                  System.out.println("20. Log out");
 
 
-} 
-		else {
-                 System.out.println("MAIN MENU");
+      } 
+      else{
+           System.out.println("MAIN MENU");
                  System.out.println("---------");
                  System.out.println("1. View Stores within 30 miles");
                  System.out.println("2. View Product List");
@@ -331,8 +333,11 @@ public class Retail {
                  System.out.println("4. View 5 recent orders");
                  System.out.println(".........................");
                  System.out.println("20. Log out");
+      }
+		
+                
 
-}          
+        
                  switch (readChoice()){
                     case 1: viewStores(esql); break;
                     case 2: viewProducts(esql); break;
@@ -340,44 +345,16 @@ public class Retail {
                     case 4: viewRecentOrders(esql); break;
                     case 5: updateProduct(esql); break;
                     case 6: viewRecentUpdates(esql); break;
-                    case 7: viewPopularProducts(esql); break;
-                    case 8: viewPopularCustomers(esql); break;
+                    case 7: viewPopularProducts(esql, authorizedUser); break;
+                    case 8: viewPopularCustomers(esql, authorizedUser); break;
                     case 9: placeProductSupplyRequests(esql); break;
+                    case 10: viewAllUsers(esql, authorizedUser); break;
+                    case 11: viewAllManagers(esql, authorizedUser); break;
+                    case 12: updateUserInfo(esql, authorizedUser); break;
 
                     case 20: usermenu = false; break;
                     default : System.out.println("Unrecognized choice!"); break;
                  }
-
-               //  System.out.println("MAIN MENU");
-               //  System.out.println("---------");
-               //  System.out.println("1. View Stores within 30 miles");
-               //  System.out.println("2. View Product List");
-               //  System.out.println("3. Place a Order");
-               //  System.out.println("4. View 5 recent orders");
-
-               //  //the following functionalities basically used by managers
-               //  System.out.println("5. Update Product");
-               //  System.out.println("6. View 5 recent Product Updates Info");
-               //  System.out.println("7. View 5 Popular Items");
-               //  System.out.println("8. View 5 Popular Customers");
-               //  System.out.println("9. Place Product Supply Request to Warehouse");
-
-               //  System.out.println(".........................");
-               //  System.out.println("20. Log out");
-               //  switch (readChoice()){
-               //     case 1: viewStores(esql); break;
-               //     case 2: viewProducts(esql); break;
-               //     case 3: placeOrder(esql); break;
-               //     case 4: viewRecentOrders(esql); break;
-               //     case 5: updateProduct(esql); break;
-               //     case 6: viewRecentUpdates(esql); break;
-               //     case 7: viewPopularProducts(esql); break;
-               //     case 8: viewPopularCustomers(esql); break;
-               //     case 9: placeProductSupplyRequests(esql); break;
-
-               //     case 20: usermenu = false; break;
-               //     default : System.out.println("Unrecognized choice!"); break;
-               //  }
 
               }
             }
@@ -560,11 +537,14 @@ public class Retail {
 	String storeID = "";
 	System.out.println("Enter Store ID:");
 	storeID = in.readLine();
-	String query = String.format("select * from Product p where storeID='%s'", storeID);
-        int userNum = esql.executeQueryAndPrintResult(query);
-	if (userNum == 0) {
-	throw new Exception();
-}
+	String query = String.format("select p.productName, p.pricePerUnit, p.numberOfUnits from Product p where storeID='%s'", storeID);
+    int userNum = esql.executeQueryAndPrintResult(query);
+    
+	if (userNum < 1) {
+      System.out.println("Invalid storeID");
+
+   }
+   
 	}
         catch (Exception e) {
         System.out.println("Store ID does not exist!");
@@ -647,8 +627,31 @@ public class Retail {
 }
    public static void updateProduct(Retail esql) {
       try{
+         
+         System.out.print("\tEnter storeId: ");
+         String store = in.readLine();
+
          System.out.print("\tEnter product: ");
          String product = in.readLine();
+         String query2 = String.format("select * from Product where storeID = '%s'", store, product);
+         int storeCheck = esql.executeQuery(query2);
+
+         if(storeCheck < 1){
+            System.out.println("Store does not exists");
+            return;
+         }
+         int choice = 2;
+         switch(choice){
+            case 1:
+               
+            break;
+            case 2:
+
+            break;
+
+            
+         }
+         
 
          //String currUserIDString = Integer.toString(userID);
          String query = String.format("update product, " , product);
@@ -667,27 +670,96 @@ public class Retail {
       }
       
    }
-   public static void viewPopularProducts(Retail esql) {
+
+   public static void viewPopularProducts(Retail esql, String manager) {
       try{
          System.out.print("\tEnter storeID: ");
          String store = in.readLine();
-         String currUserIDString = Integer.toString(userID);
-         String query = String.format("select o.productName from Orders o where o.storeID = '%s' group by o.productName order by sum(o.unitsOrdered) desc limit 5", store);
+         String currUserIDString = getUser();
+         String query = String.format("select o.productName from Orders o, Users u, Store s where s.managerID = u.userID and u.name = '%s' and o.storeID = '%s' group by o.productName order by sum(o.unitsOrdered) desc limit 5", currUserIDString, store);
          int userNum = esql.executeQueryAndPrintResult(query);
 
+         String query2 = String.format("" );
+          if(userNum < 1){
+            System.out.println("Store does not exist");
+         }
+
       }catch(Exception e){
            System.err.println (e.getMessage());
       }
 
    }
-   public static void viewPopularCustomers(Retail esql) {
+   public static void viewPopularCustomers(Retail esql, String manager) {
+      String currUserIDString = Integer.toString(userID);
       try{
          
+         String check = String.format("select distinct u.name from Users u, Store s where s.managerID = u.userID AND u.name = '%s'", manager);
+         
+
+
+         
+            System.out.print("\tEnter storeID: ");
+            String store = in.readLine();
+            String query = String.format("SELECT u.name, s.name from Users u, Users m, Store s, Orders o where s.managerID = m.userID and u.name = '%s' and m.userID = o.customerID and o.storeID = '%s' group by u.name, s.name ORDER BY sum(o.unitsOrdered) DESC LIMIT 5",manager, store);
+            int userNum3 = esql.executeQueryAndPrintResult(query);
+
+        
+         if(manager.contains("admin")){
+            String adminC = "select u.name, s.name from Users u, Users manager , Store s, Orders o where s.managerID = manager.userID and u.userID = o.customerID and o.storeID = s.storeID group by u.name, s.name order by sum(o.orderNumber) desc limit 5";
+            int userNum2 = esql.executeQueryAndPrintResult(adminC);
+            return;
+         }
+
+
       }catch(Exception e){
            System.err.println (e.getMessage());
       }
    }
-   public static void placeProductSupplyRequests(Retail esql) {}
+   public static void placeProductSupplyRequests(Retail esql) {
+
+   }
+
+   public static boolean managerCheck(Retail esql, String manager){
+      try{
+         String query = String.format("select distinct u.name from Users u where u.name = '%s' and u.type = 'manager'", manager);
+         if(esql.executeQuery(query) == 0){
+            return false;
+         }
+         else{
+            return true;
+         }
+
+      }catch(Exception e){
+         System.err.println (e.getMessage());
+         return false;
+      }
+
+   }
+   public static boolean adminCheck(Retail esql, String admin){
+      try
+      {
+         String query = String.format("select distinct u.name from Users u where u.name = '%s' and u.type = 'admin';", admin);
+         if(esql.executeQuery(query) == 0)
+            return false;
+         else
+            return true;
+         
+      }catch(Exception e)
+      {
+         System.err.println(e.getMessage());
+         return false;
+      }
+   }
+
+   public static void viewAllUsers(Retail esql, String admin){
+
+   }
+   public static void viewAllManagers(Retail esql, String admin){
+
+   }
+   public static void updateUserInfo(Retail esql, String admin){
+
+   }
 
 }//end Retail
 
