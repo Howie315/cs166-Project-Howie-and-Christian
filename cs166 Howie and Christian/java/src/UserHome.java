@@ -19,6 +19,7 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -31,6 +32,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
+import java.awt.Dimension;
 
 public class UserHome extends JFrame {
     private static final long serialVersionUID = 1L;
@@ -38,18 +40,21 @@ public class UserHome extends JFrame {
     private JPanel top;
     private JButton btnNewButton;
     private JButton storesButton;
+    private JButton productButton;
     private JMenuBar menuBar;
     private JMenu fileMenu;
     private JMenu aboutMenu;
     private JMenuItem exitItem;
-    JMenu logout;
-    JMenuItem logoutItem;
+    private JMenu logout;
+    private JMenuItem logoutItem;
+    private JLabel welcome;
 
     private JMenuItem about;
     private static Retail esql;
     // Classes
     private BrowseStores store;
     private BrowseProducts product;
+    private PlaceOrder order;
 
     private UserLogin login;
     private static String user = "Howie";
@@ -62,8 +67,8 @@ public class UserHome extends JFrame {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    //new UserHome(user).setVisible(true);
-                    UserHome frame = new UserHome();
+                    new UserHome(user).setVisible(true);
+                    //UserHome frame = new UserHome();
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -127,7 +132,12 @@ public class UserHome extends JFrame {
         // contentPane.add(top, BorderLayout.NORTH);
         // add(top);
         // add(contentPane);
+        welcome = new JLabel("Welcome User");
+        welcome.setBounds(450, 10, 200, 30);
+        add(welcome);
 
+
+        
         btnNewButton = new JButton("Logout");
         btnNewButton.setForeground(new Color(0, 0, 0));
         btnNewButton.setBackground(UIManager.getColor("Button.disabledForeground"));
@@ -151,14 +161,82 @@ public class UserHome extends JFrame {
         contentPane.add(btnNewButton, BorderLayout.SOUTH);
         add(btnNewButton);
 
+        JLabel label = new JLabel();
+        label.setIcon(new ImageIcon("cs166 Howie and Christian/java/src/Images/25694.png"));
+        Dimension size = label.getPreferredSize();
+        label.setBounds(300, 40, size.width, size.height);
+        contentPane.add(label);
+
+
         storesButton = new JButton("View Stores Near you");
         storesButton.setForeground(new Color(0, 0, 0));
         storesButton.setBackground(UIManager.getColor("Button.disabledForeground"));
 
         storesButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-
+                //dispose();
+                store = new BrowseStores(userSes);
+                store.setVisible(true);
             }
         });
+        add(storesButton);
+        storesButton.setBounds(50, 70, 200, 30);
+
+
+
+        productButton = new JButton("View Products");
+        productButton.setForeground(new Color(0, 0, 0));
+        productButton.setBackground(UIManager.getColor("Button.disabledForeground"));
+        productButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                //dispose();
+                product = new BrowseProducts(userSes);
+                product.setVisible(true);
+            }
+        });
+
+        add(productButton);
+        productButton.setBounds(50, 100, 200, 30);
+
+        // System.out.println("1. View Stores within 30 miles");
+        // System.out.println("2. View Product List");
+        // System.out.println("3. Place a Order");
+        // System.out.println("4. View 5 recent orders");
+
+        JButton placeOrder = new JButton("Place Order");
+        placeOrder.setForeground(new Color(0, 0, 0));
+        placeOrder.setBackground(UIManager.getColor("Button.disabledForeground"));
+
+        placeOrder.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                //dispose();
+                order = new PlaceOrder(userSes);
+                order.setVisible(true);
+            }
+        });
+
+        add(placeOrder);
+        placeOrder.setBounds(50, 130, 200, 30);
+
+
+        JButton recent = new JButton("View Most Recent");
+        recent.setForeground(new Color(0, 0, 0));
+        recent.setBackground(UIManager.getColor("Button.disabledForeground"));
+
+        recent.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                //dispose();
+                order = new PlaceOrder(userSes);
+                store.setVisible(true);
+            }
+        });
+
+       add(recent);
+       recent.setBounds(50, 160, 200, 30);
+
+       
+       
+
+
     }
 }
