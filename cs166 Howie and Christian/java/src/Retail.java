@@ -247,7 +247,7 @@ public class Retail {
     * @param args the command line arguments this inclues the <mysql|pgsql> <login file>
     */
    public static void main (String[] args) {
-     
+
       if (args.length != 3) {
          System.err.println (
             "Usage: " +
@@ -287,10 +287,14 @@ public class Retail {
             if (authorizedUser != null) {
               boolean usermenu = true;
               while(usermenu) {
+
+	
+
              
 
 
 		   if(authorizedUser.contains("admin")) {
+
                  System.out.println("MAIN MENU");
                  System.out.println("---------");
 
@@ -313,10 +317,11 @@ public class Retail {
                  System.out.println("MAIN MENU");
                  System.out.println("---------");
                  System.out.println("5. Update Product");
-                 System.out.println("6. View 5 recent Product Updates Info");
-                 System.out.println("7. View 5 Popular Items");
-                 System.out.println("8. View 5 Popular Customers");
+                 System.out.println("6. View 5 recent Product Updates of Your Stores");
+                 System.out.println("7. View 5 Popular Items of Your Stores");
+                 System.out.println("8. View 5 Popular Customers of Your Stores");
                  System.out.println("9. Place Product Supply Request to Warehouse");
+		 System.out.println("10. View All Orders Of Your Stores");
 
 
                  System.out.println(".........................");
@@ -348,9 +353,13 @@ public class Retail {
                     case 7: viewPopularProducts(esql, authorizedUser); break;
                     case 8: viewPopularCustomers(esql, authorizedUser); break;
                     case 9: placeProductSupplyRequests(esql); break;
-                    case 10: viewAllUsers(esql, authorizedUser); break;
-                    case 11: viewAllManagers(esql, authorizedUser); break;
-                    case 12: updateUserInfo(esql, authorizedUser); break;
+
+		    case 10: managerViewOrders(esql); break;
+
+                    case 11: viewAllUsers(esql, authorizedUser); break;
+                    case 12: viewAllManagers(esql, authorizedUser); break;
+                    case 13: updateUserInfo(esql, authorizedUser); break;
+
 
                     case 20: usermenu = false; break;
                     default : System.out.println("Unrecognized choice!"); break;
@@ -599,12 +608,11 @@ public class Retail {
 }
 
 	 else {
-	 String query2 = String.format("insert into orders (orderNumber, customerID, storeID, productName, unitsOrdered, orderTime) values (nextval('nextOrderNum'),%s,%s,'%s',%s,now())", userID, storeID, productName, numUnits);
+	 String query2 = String.format("insert into orders (customerID, storeID, productName, unitsOrdered, orderTime) values (%s,%s,'%s',%s,now())", userID, storeID, productName, numUnits);
 	 esql.executeUpdate(query2);
 	 String query5 = String.format("update product set numberOfUnits = numberOfUnits - %s where storeID = %s and productName = '%s';", numUnits, storeID, productName);
 	 esql.executeUpdate(query5);
 	 System.out.println("Order Successfully made!");
-	 //FINISH INSERTING INTO ORDERS TABLE AND UPDATING PRODUCT TABLE THEN DONE WITH THIS 
 	 }
 	 }
          catch (Exception e) {
@@ -627,43 +635,97 @@ public class Retail {
 }
    public static void updateProduct(Retail esql) {
       try{
-         
-         System.out.print("\tEnter storeId: ");
-         String store = in.readLine();
 
-         System.out.print("\tEnter product: ");
-         String product = in.readLine();
-         String query2 = String.format("select * from Product where storeID = '%s'", store, product);
-         int storeCheck = esql.executeQuery(query2);
+	 if (userType.contains("customer") || userType.contains("admin")) {
+	 System.out.println("Only Managers Can Use This Function! (Nice try though :) )");
+	 return;
+	 }
 
-         if(storeCheck < 1){
-            System.out.println("Store does not exists");
-            return;
+	 System.out.print("\tEnter storeID of which you want to update products:");
+	 int storeID = Integer.parseInt(in.readLine());
+	 boolean ManagerDoesManage = false;
+	 String query = String.format("select storeID from store where managerID = %s", userID);
+	 List<List<String>> result = esql.executeQueryAndReturnResult(query);
+	 for (List<String> list : result) {
+		
+		for (String item : list) {
+			if (Integer.parseInt(item) == storeID) {
+				ManagerDoesManage = true;	
+			}
+		}
+
+	 }
+
+	 if (ManagerDoesManage == false) {
+		System.out.println("You do not manage this store or it does not exist. You can only update products of the stores which you manage.");
+		return;
+	 }
+
+	 System.out.println("Please enter the name of the product which you want to update:");
+	 String productName = in.readLine();
+
+         String query3 = String.format("select * from product where productName = '%s' and storeID = %s;", productName, storeID);
+         int check1 = esql.executeQuery(query3);
+         if (check1 == 0) {
+                System.out.println("Product Name Does Not Exist!");
+                return;
          }
-         int choice = 2;
-         switch(choice){
-            case 1:
-               
-            break;
-            case 2:
 
-            break;
 
-            
+	 System.out.println("Please enter new number of units and price. (If you do not want to change one of these options, enter the pre-existing value)");
+	 System.out.println("New Number of Units:");
+	 int numUnits = Integer.parseInt(in.readLine());
+
+         if (numUnits < 0) {
+                System.out.println("New Number Of Units Can't Be Less Than 0!");
+                return;
          }
-         
+
+
+	 System.out.println("New Product Price:");
+	 float price = Float.parseFloat(in.readLine());
+	 
+	 if (price <= 0) {
+                System.out.println("New Product Price Can't Be 0 Or Less!");
+                return;
+         }
+
+
+	 String query2 = String.format("update product set pricePerUnit = %s, numberOfUnits = %s where productName = '%s' and storeId = %s;", price, numUnits, productName, storeID);
+	 
+
+
+	 esql.executeUpdate(query2);
+
+	 //insert into product updates
+	 
+
+	 String query4 = String.format("insert into ProductUpdates(managerID, storeID, productName, updatedOn) values (%s,%s,'%s',now())", userID, storeID, productName);
+	 esql.executeUpdate(query4);
+
+	 System.out.println("Product Update Successfully made and Recent Product Updates Changed Accordingly!");
+	
+         //System.out.print("\tEnter product: ");
+         //String product = in.readLine();
+
 
          //String currUserIDString = Integer.toString(userID);
-         String query = String.format("update product, " , product);
+         //String query = String.format("update product, " , product);
 
-      }catch(Exception e){
+      }catch(Exception e) {
            System.err.println (e.getMessage());
       }
    }
    public static void viewRecentUpdates(Retail esql) {
       try{
+
+	 if (userType.contains("customer") || userType.contains("admin")) {
+        	 System.out.println("Only Managers Can Use This Function! (Nice try though :) )");
+        	 return;
+         }
+
          String currUserIDString = Integer.toString(userID);
-         String query = String.format("select * from ProductUpdates p order by p.updatedOn desc limit 5", userID);
+         String query = String.format("select * from ProductUpdates p where p.managerID = %s order by p.updatedOn desc limit 5", userID);
          int userNum = esql.executeQueryAndPrintResult(query);
       }catch(Exception e){
            System.err.println (e.getMessage());
@@ -671,12 +733,36 @@ public class Retail {
       
    }
 
-   public static void viewPopularProducts(Retail esql, String manager) {
+   public static void managerViewOrders(Retail esql) {
+	try{
+
+         if (userType.contains("customer") || userType.contains("admin")) {
+         System.out.println("Only Managers Can Use This Function! (Nice try though :) )");
+         return;
+	 }
+
+
+		String query = String.format("select o.orderNumber, u.name, o.storeID, o.productName, o.orderTime from Orders o, Users u, Store s where o.customerID=u.userID and o.storeID=s.storeID and s.managerID = %s;", userID);
+		esql.executeQueryAndPrintResult(query);
+	}
+	catch(Exception e) {
+		System.err.println(e.getMessage());
+	}
+
+   }
+
+   public static void viewPopularProducts(Retail esql) {
       try{
-         System.out.print("\tEnter storeID: ");
-         String store = in.readLine();
-         String currUserIDString = getUser();
-         String query = String.format("select o.productName from Orders o, Users u, Store s where s.managerID = u.userID and u.name = '%s' and o.storeID = '%s' group by o.productName order by sum(o.unitsOrdered) desc limit 5", currUserIDString, store);
+
+         if (userType.contains("customer") || userType.contains("admin")) {
+                 System.out.println("Only Managers Can Use This Function! (Nice try though :) )");
+                 return;
+         }
+
+
+         String query = String.format("select o.productName, sum(o.unitsOrdered) as TotalUnitsOrdered from Orders o, Store s where o.storeID=s.storeID and s.managerID = %s group by o.productName order by sum(o.unitsOrdered) desc limit 5;", userID);
+
+
          int userNum = esql.executeQueryAndPrintResult(query);
 
          String query2 = String.format("" );
@@ -689,9 +775,21 @@ public class Retail {
       }
 
    }
+
+
+
+   public static void viewPopularCustomers(Retail esql) {
    public static void viewPopularCustomers(Retail esql, String manager) {
       String currUserIDString = Integer.toString(userID);
       try{
+
+         if (userType.contains("customer") || userType.contains("admin")) {
+                 System.out.println("Only Managers Can Use This Function! (Nice try though :) )");
+                 return;
+         }
+
+String query = String.format("select u.name, u.latitude, u.longitude, sum(o.unitsOrdered) as TotalUnitsOrdered from Orders o, Users u, Store s where o.customerID=u.userID and o.storeID=s.storeID and s.managerID=%s group by u.userID order by sum(o.unitsOrdered) desc limit 5;", userID);
+int num = esql.executeQueryAndPrintResult(query);
          
          String check = String.format("select distinct u.name from Users u, Store s where s.managerID = u.userID AND u.name = '%s'", manager);
          
@@ -715,6 +813,84 @@ public class Retail {
            System.err.println (e.getMessage());
       }
    }
+
+
+   public static void placeProductSupplyRequests(Retail esql) {
+
+      try{
+         if (userType.contains("customer") || userType.contains("admin")) {
+         System.out.println("Only Managers Can Use This Function! (Nice try though :) )");
+         return;
+         }
+
+         System.out.print("Enter storeID of which you want to make a supply request:");
+         int storeID = Integer.parseInt(in.readLine());
+         boolean ManagerDoesManage = false;
+         String query = String.format("select storeID from store where managerID = %s", userID);
+         List<List<String>> result = esql.executeQueryAndReturnResult(query);
+         for (List<String> list : result) {
+
+                for (String item : list) {
+                        if (Integer.parseInt(item) == storeID) {
+                                ManagerDoesManage = true;
+                        }
+                }
+
+         }
+
+         if (ManagerDoesManage == false) {
+                System.out.println("You do not manage this store or it does not exist. You can only update products of the stores which you manage.");
+                return;
+         }
+
+	//ASK FOR PRODUCT NAME
+	 System.out.print("Enter Product Name for Which You Want to Make a Supply Request:");
+         String productName = in.readLine();	
+
+	//CHECK IF PRODUCT NAME EXISTS AT SAID STORE
+
+         String query2 = String.format("select * from product where productName = '%s' and storeID = %s;", productName, storeID);
+         int check1 = esql.executeQuery(query2);
+         if (check1 == 0) {
+                System.out.println("Product Name Does Not Exist!");
+                return;
+         }
+
+	//ASK FOR NUMBER OF UNITS
+	
+	 System.out.print("Enter Number of Units for the Product Request:");
+         int numUnits = Integer.parseInt(in.readLine());
+
+	//NUMBER OF UNITS CANT BE 0 OR LESS
+	if (numUnits <= 0){
+	System.out.println("Number Of Units Can't Be 0 or Less!");
+	return;
+	}
+
+	//ASK FOR WAREHOUSE ID
+	System.out.print("Enter Warehouse ID:");
+        int warehouseID = Integer.parseInt(in.readLine());
+
+	//CHECK THAT WAREHOUSE ID EXISTS
+	 if (warehouseID < 1 || warehouseID > 5){
+                System.out.println("This Warehouse ID Does Not Exist!");
+                return;
+         }
+
+//INSERT INTO SUPPLYREQUESTS AND UPDATE PRODUCTS TABLE WITH NEW PRODUCT
+         String query4 = String.format("insert into ProductSupplyRequests(managerID, warehouseID, storeID, productName, unitsRequested) values (%s,%s,%s, '%s', %s)", userID, warehouseID, storeID, productName, numUnits);
+         esql.executeUpdate(query4);
+
+         String query5 = String.format("update product set numberOfUnits = numberOfUnits+%s where productName = '%s' and storeId = %s;", numUnits, productName, storeID);
+	 esql.executeUpdate(query5);
+
+	 System.out.println("Supply Request Successfully Made! Product Supply Requests and Number of Products Updated Accordingly!");
+
+	}catch(Exception e) {
+
+	System.err.println(e.getMessage());
+}
+=======
    public static void placeProductSupplyRequests(Retail esql) {
 
    }
@@ -761,5 +937,7 @@ public class Retail {
 
    }
 
+
 }//end Retail
+}
 
