@@ -16,7 +16,7 @@ USING BTREE
 --Userid hash
 CREATE INDEX userIDIndex
 ON Users
-USING HASH
+USING BTREE
 (userID);
 
 
@@ -37,7 +37,7 @@ USING BTREE
 -- This is to search a speciic range for queries for finding specific store id for manager
 CREATE INDEX storeID_index
 ON Orders
-USING BTREE
+USING HASH
 (storeID);
 
 
