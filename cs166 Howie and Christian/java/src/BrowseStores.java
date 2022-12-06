@@ -45,7 +45,7 @@ public class BrowseStores extends JFrame {
     // Retail class
     private Retail esql;
     private Connection _connection = null;
-
+    private UserHome obj;
     // Dummy testing variable
     private static String user = "Howie";
 
@@ -84,40 +84,68 @@ public class BrowseStores extends JFrame {
          * This is for placing the button and the list
          */
         store = new JLabel("Stores near you");
-        store.setFont(new Font("Times New Roman", Font.PLAIN, 20));
+        
         // store.setBackground(Color.BLACK);
-        store.setBounds(425, 70, 200, 30);
+        store.setBounds(450, 20, 200, 30);
         panel.add(store, BorderLayout.NORTH);
         add(store);
 
-        try {
 
-            String query = String.format(
-                    "select s.storeID, s.name, calculate_distance(u.latitude, u.longitude, s.latitude, s.longitude) as dist from users u, store s where u.userID = '%s' and calculate_distance(u.latitude, u.longitude, s.latitude, s.longitude) < 30",
-                    esql.getUserId());
-            String url = "jdbc:postgresql://localhost:" + esql.getdbport() + "/" +
-                    esql.getdbname();
-            _connection = DriverManager.getConnection(url, esql.getUser(),
-                    esql.getPassword());
-            List<String> list = new ArrayList<>();
-            PreparedStatement st = _connection.prepareStatement(query);
-            ResultSet userNum = st.executeQuery();
+        JLabel label = new JLabel();
+        label.setIcon(new ImageIcon("cs166 Howie and Christian/java/src/Images/free-store-icon-2017-thumb.png"));
+        Dimension size = label.getPreferredSize();
+        label.setBounds(10, 10, size.width, size.height);
+        panel.add(label);
+        add(label);
+        // try {
 
-            while (userNum.next()) {
-                list.add(userNum.getString("Store.name"));
+        //     String query = String.format(
+        //             "select s.storeID, s.name, calculate_distance(u.latitude, u.longitude, s.latitude, s.longitude) as dist from users u, store s where u.userID = '%s' and calculate_distance(u.latitude, u.longitude, s.latitude, s.longitude) < 30",
+        //             esql.getUserId());
+        //     String url = "jdbc:postgresql://localhost:" + esql.getdbport() + "/" +
+        //             esql.getdbname();
+        //     _connection = DriverManager.getConnection(url, esql.getUser(),
+        //             esql.getPassword());
+        //     List<String> list = new ArrayList<>();
+        //     PreparedStatement st = _connection.prepareStatement(query);
+        //     ResultSet userNum = st.executeQuery();
 
-                stores = new JList(list.toArray());
-                stores.setBackground(Color.BLACK);
-                stores.setBounds(500, 200, 100, 30);
+        //     while (userNum.next()) {
+        //         list.add(userNum.getString("Store.name"));
 
+        //         stores = new JList(list.toArray());
+        //         stores.setBackground(Color.BLACK);
+        //         stores.setBounds(500, 200, 100, 30);
+
+        //     }
+
+        // } catch (SQLException sqlException) {
+        //     sqlException.printStackTrace();
+        // }
+
+        //panel.add(stores);
+        //add(stores);
+        JButton btnNewButton = new JButton("Home");
+        btnNewButton.setForeground(new Color(0, 0, 0));
+        btnNewButton.setBackground(UIManager.getColor("Button.disabledForeground"));
+
+        btnNewButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                int a = JOptionPane.showConfirmDialog(btnNewButton, "Are you sure?");
+                // JOptionPane.setRootFrame(null);
+                if (a == JOptionPane.YES_OPTION) {
+                    dispose();
+                    obj = new UserHome(user);
+                    obj.setTitle("Home");
+                    obj.setVisible(true);
+                } else if (a == JOptionPane.NO_OPTION) {
+
+                }
             }
+        });
+        btnNewButton.setBounds(880, 530, 100, 30);
 
-        } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
-        }
-
-        panel.add(stores);
-        add(stores);
-
+        panel.add(btnNewButton, BorderLayout.SOUTH);
+        add(btnNewButton);
     }
 }
