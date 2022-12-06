@@ -897,7 +897,7 @@ int num = esql.executeQueryAndPrintResult(query);
         String query = String.format("select storeID, productName, numberOfUnits, pricePerUnit from product where productName = '%s'", userName);
         int rowNum = esql.executeQuery(query);
         if (rowNum == 0) {
-                System.out.println("User Name Not Found! Please Try Again.");
+                System.out.println("Product Name Not Found! Please Try Again.");
         }
         esql.executeQueryAndPrintResult(query);
 
